@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  nginx: 
+    image: nginx:alpine
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.nginx-secure.entrypoints=websecure"
+      - "traefik.http.routers.nginx-secure.rule=Host(`lelab.nida.ac.th`)"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

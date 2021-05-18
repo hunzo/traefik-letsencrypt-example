@@ -1,12 +1,12 @@
 version: '3.7'
 
 services:
-  wp-db:
+  joomla-db:
     image: mariadb
     volumes:
-      - wp_db:/var/lib/mysql
+      - joomla_db:/var/lib/mysql
     networks:
-      - wp-network
+      - joomla-network
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: supersecretpassword
@@ -14,33 +14,33 @@ services:
       MYSQL_USER: dbuser
       MYSQL_PASSWORD: dbpassword
 
-  wordpress:
-    image: wordpress:latest
+  joomla:
+    image: joomla:latest
     environment:
-      WORDPRESS_DB_HOST: wp-db:3306
-      WORDPRESS_DB_NAME: db
-      WORDPRESS_DB_USER: dbuser
-      WORDPRESS_DB_PASSWORD: dbpassword
+      JOOMLA_DB_HOST: joomla-db
+      JOOMLA_DB_USER: dbuser
+      JOOMLA_DB_PASSWORD: dbpassword
+      JOOMLA_DB_NAME: db
     volumes:
-      - ./wp-data:/var/www/html/wp-content
+      - ./joomla_data:/var/www/html/
     networks:
       - proxy
-      - wp-network
+      - joomla-network
     restart: always
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
-      - "traefik.http.routers.wordpress-secure.entrypoints=websecure"
-      - "traefik.http.routers.wordpress-secure.rule=Host(`wordpress.YOURDOMAIN`)"
+      - "traefik.http.routers.joomla-secure.entrypoints=websecure"
+      - "traefik.http.routers.joomla-secure.rule=Host(`joomla.YOURDOMAIN`)"
       # - "traefik.http.routers.wordpress-secure.service=wordpress-service"
       # - "traefik.http.services.wordpress-service.loadbalancer.server.port=80"
 
 volumes:
-  wp_db:
+  joomla_db:
     driver: local
 
 networks:
-  wp-network:
+  joomla-network:
     external: true
   proxy:
     external: true
